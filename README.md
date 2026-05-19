@@ -17,8 +17,8 @@ AI agent that automatically scores event invitations received by email and store
 
 ## Workflow Architecture
 Gmail Trigger -> HTTP Request (full email) -> Code JS (extract text + detect attachments)
-IF -> [with PDF] -> HTTP Request (download PDF) -> Code JS (combine content)
-Else -> [no PDF] -> AI Agent (Claude + Tavily) -> Code JS (parse JSON) -> Notion
+1. [with PDF] -> HTTP Request (download PDF) -> Code JS (combine content)
+2. [no PDF] -> AI Agent (Claude + Tavily) -> Code JS (parse JSON) -> Notion
 
 ## Prerequisites
 1. n8n self-hosted instance

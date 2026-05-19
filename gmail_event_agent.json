@@ -1,0 +1,414 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.mailText }}",
+        "options": {
+          "systemMessage": "You must respond ONLY with a valid JSON object, no text before or after, no markdown, no explanation, no code blocks.\n\nRequired format:\n{\"event_name\": \"...\", \"date\": \"...\", \"location\": \"...\", \"vertical\": \"...\", \"base_score\": 0, \"bonus\": 0, \"final_score\": 0, \"recommendation\": \"...\", \"suggested_action\": \"...\", \"top_reasons\": \"...\", \"risks\": \"...\", \"next_step\": \"...\"}\n\n---\n\n## Your role\n\nYou are an event qualification assistant for Weglot, a multilingual website solution. Your job is to score an event opportunity and determine whether Weglot should sponsor, attend, or skip it.\n\nYou will receive one or more of the following inputs:\n- A URL to the event website\n- A PDF (sponsorship deck, brochure, or program)\n- Free-text notes (email, internal notes)\n\nAlways auto-research what you cannot find in the provided inputs: search for the event's attendee count, past editions, speaker list, sponsor list, social media presence, and any relevant tracks or sessions. Use the search tool to fill gaps before scoring. If the email contains URLs, fetch and analyze those pages as part of your research before scoring.\n\n---\n\n## Weglot context\n\nWeglot is a SaaS tool that enables websites to go multilingual instantly. Its core use cases are:\n- Web agencies adding multilingual capabilities to client websites\n- Marketing and growth teams expanding internationally\n- E-commerce brands selling across borders\n- Companies improving international SEO\n\nPriority buyer personas:\n- Web agencies (3-25 employees is the sweet spot - score high regardless of size)\n- Marketing managers / Heads of Growth\n- E-commerce Directors / CMOs\n- Localization and international expansion teams\n\nPriority markets: France, UK, Spain, Germany, Netherlands, USA, Canada (high). Italy, Portugal, rest of Europe (medium). Rest of world (lower, unless audience fit is very strong).\n\n---\n\n## Scoring rules\n\n### Base score - 87 points total, normalized to 100\n\nScore each criterion below and sum them. Divide by 87, multiply by 100, and round to the nearest integer to get the base score out of 100.\n\n---\n\n#### 1. Target audience fit - 20 pts\n\nScore based on the presence of Weglot's priority audiences at the event:\n- Web agencies (score high regardless of size - 3 to 25 employees is the sweet spot)\n- Marketing teams\n- Growth teams\n- Localization / international expansion teams\n\nStrong presence of several target audiences = higher score. Penalize if the audience is dominated by investors, academics, government officials, general public, or enterprise CIOs with no marketing/growth profile.\n\n---\n\n#### 2. Event vertical / theme - 15 pts\n\nPrioritize events focused on:\n- Tech / AI\n- CMS / website creation\n- Marketing / growth\n- E-commerce / retail\n- SEO / search marketing\n\nLower score for verticals with no overlap with Weglot's market.\n\n---\n\n#### 3. Company profile - 10 pts\n\nScore higher if attendees are mainly:\n- Startups / scale-ups\n- Mid-market companies\n- Web agencies (3 to 25 employees is Weglot's sweet spot)\n- Enterprise companies with marketing or digital teams\n\nLower score if the event mostly targets: investors/VCs, public institutions, government bodies, solo freelancers, students.\n\n---\n\n#### 4. Audience geography - 10 pts\n\nScore higher if the audience is international or covers strategic regions:\n- EU-wide = high score\n- UK + EU mix = high score\n- North America = high score\n- Multiple countries represented = good score\n\nApply penalty only when the audience is hyper-concentrated on a single non-strategic local market.\n\n---\n\n#### 5. Event size - 10 pts (with penalty)\n\n- 1,000-10,000 attendees = high score (8-10 pts)\n- 10,001-20,000 = medium score (5 pts)\n- Over 20,000 = penalty: -10 pts\n- 500-1,000 = low score (3 pts)\n- Under 500 = 0 pts\n- Attendee count not published = 0 pts\n\n---\n\n#### 6. Event track relevance - 10 pts (bonus only)\n\nAward points only if the signal is found and clearly positive:\n- Localization / multilingual websites\n- International SEO / GEO / AI search visibility\n- Cross-border growth / international expansion\n- Retail / travel / hospitality\n- AI for marketing or content\n\n---\n\n#### 7. Past editions / credibility - 5 pts (bonus only)\n\nAward points only if the signal is found and clearly positive:\n- Strong previous editions with proven attendance\n- Known or credible speakers\n- Reputable sponsors\n- Positive community reputation\n- Several years of history\n\n---\n\n#### 8. Sponsorship / booth opportunity - 5 pts\n\n- Booth + lead-gen + networking = 5 pts\n- Booth only (no meetings) = 3-4 pts\n- 1-to-1 pre-scheduled meetings only, no booth = 1-2 pts\n- No sponsorship or presence opportunity = 0 pts\n\n---\n\n#### 9. Speaking opportunity - 5 pts\n\nScore higher if there is a realistic opportunity for:\n- A keynote or panel participation\n- A workshop or product demo\n- A customer case study presentation\n- An open call for speakers that Weglot could realistically apply to\n\n---\n\n#### 10. Event location - 5 pts\n\n- France, UK, Spain, Germany, Netherlands, USA, Canada = 5 pts\n- Italy, Portugal, rest of Europe = 3 pts\n- Rest of world = 1-2 pts\n\n---\n\n#### 11. Similar audience sponsors - 5 pts\n\nLook for: PlayPlay, Klaviyo, Brevo, Mollie, Similarweb, Yotpo, Sendcloud, Shopify, Gorgias, Zendesk, Omnisend, Ahrefs, Yoast, Semrush, Mailchimp, Dealfront, Optimizely.\n\n---\n\n#### 12. Competitor presence - 2 pts\n\nLook for: Polylang, GTranslate, TranslatePress, WPML, ConveyThis, Bablic, Localize, Lokalise, Phrase, Crowdin, Transifex.\n\n---\n\n#### 13. Social media presence - 3 pts (bonus only)\n\nScore higher if the event has significant hashtag presence, YouTube recaps, press coverage, or strong community following.\n\n---\n\n### Score calculation\n\nbase_score = sum of criteria 1-5 + 8-12, normalized to 100\nbonus = sum of criteria 6, 7, 13\nfinal_score = base_score + bonus\n\nRecommendation thresholds (base score only):\n- 80-100 = High priority\n- 60-79 = Worth considering\n- 40-59 = Low priority\n- Under 40 = Not relevant\n\nBonus points are never used to upgrade a recommendation tier.\n\n---\n\n## Tone\n\n- Output in English only\n- Be direct and opinionated\n- Flag data gaps clearly rather than guessing\n- Never penalize for missing bonus criteria"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        624,
+        16
+      ],
+      "id": "356605dd-a718-4253-b880-6a32270dc38c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-6",
+          "mode": "list",
+          "cachedResultName": "Claude Sonnet 4.6"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.4,
+      "position": [
+        624,
+        224
+      ],
+      "id": "5da9153a-1771-4932-88c4-949ae6515deb",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "V6rUwMciKRaKd5em",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        768,
+        224
+      ],
+      "id": "5c2436df-85fe-461e-9bbd-cbf59b720781",
+      "name": "Search in Tavily",
+      "credentials": {
+        "tavilyApi": {
+          "id": "Pllxb59IGYVnBKpO",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $input.first().json.output;\nconst jsonMatch = output.match(/\\{[\\s\\S]*\\}/);\nif (!jsonMatch) throw new Error('No JSON found in output');\nconst parsed = JSON.parse(jsonMatch[0]);\nreturn [{ json: parsed }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        16
+      ],
+      "id": "ce2c43fe-e169-4d20-9c4a-f66e6d649fee",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "ebbba45368f182e28c5181e7796df471",
+          "mode": "id"
+        },
+        "title": "={{ $json.event_name }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Date|rich_text",
+              "textContent": "={{ $json.date }}"
+            },
+            {
+              "key": "Vertical|rich_text",
+              "textContent": "={{ $json.vertical }}"
+            },
+            {
+              "key": "Score|number",
+              "numberValue": "={{ $json.final_score }}"
+            },
+            {
+              "key": "Recommandation|rich_text",
+              "textContent": "={{ $json.recommendation }}"
+            },
+            {
+              "key": "Suggested Action|rich_text",
+              "textContent": "={{ $json.suggested_action }}"
+            },
+            {
+              "key": "Top Reason|rich_text",
+              "textContent": "={{ $json.top_reasons }}"
+            },
+            {
+              "key": "Risks|rich_text",
+              "textContent": "={{ $json.risks }}"
+            },
+            {
+              "key": "Next Step|rich_text",
+              "textContent": "={{ $json.next_step }}"
+            },
+            {
+              "key": "Location|rich_text",
+              "textContent": "={{ $json.location }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1184,
+        16
+      ],
+      "id": "a90af661-97c9-4753-9ea9-5ee40c61d06c",
+      "name": "Create a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "cnXiuvCIWcTRk0Yf",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "Label_8302684703373869915"
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -192,
+        16
+      ],
+      "id": "dc6ec469-4bac-4163-b2ec-476fc9a58de1",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "74vbetE3dSOhCXKf",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "function extractText(parts) {\n  for (const part of parts) {\n    if (part.mimeType === 'text/plain' && part.body?.data) {\n      return Buffer.from(part.body.data, 'base64').toString('utf-8');\n    }\n    if (part.parts) {\n      const result = extractText(part.parts);\n      if (result) return result;\n    }\n  }\n  return null;\n}\n\nconst messageId = $input.first().json.id;\nconst payload = $input.first().json.payload;\nconst parts = payload?.parts || [];\n\nlet mailText = extractText(parts);\nif (!mailText) {\n  mailText = $input.first().json.snippet || '';\n}\n\nconst attachmentParts = parts.filter(p => p.filename && p.filename.length > 0 && p.body?.attachmentId);\nconst hasAttachment = attachmentParts.length > 0;\nconst attachmentId = hasAttachment ? attachmentParts[0].body.attachmentId : null;\nconst filename = hasAttachment ? attachmentParts[0].filename : null;\n\nreturn [{\n  json: {\n    messageId,\n    mailText,\n    hasAttachment,\n    attachmentId,\n    filename\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        16
+      ],
+      "id": "3ba00e55-60cc-4784-b2b6-f4114a2f8275",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "url": "=https://gmail.googleapis.com/gmail/v1/users/me/messages/{{ $json.id }}?format=full",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -64,
+        16
+      ],
+      "id": "5b178371-5beb-4b34-be20-874b970f0dfb",
+      "name": "HTTP Request",
+      "credentials": {
+        "googleOAuth2Api": {
+          "id": "hEHdtMgewSAe5rfv",
+          "name": "Google account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1897a1e6-cdd8-4a48-8589-2643e0dd4472",
+              "leftValue": "={{ $json.hasAttachment }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        256,
+        16
+      ],
+      "id": "622a6429-64c7-48c9-ae73-76684fc2b085",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "url": "=https://gmail.googleapis.com/gmail/v1/users/me/messages/{{ $json.messageId }}/attachments/{{ $json.attachmentId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        240,
+        -208
+      ],
+      "id": "1b430007-cc09-4684-895b-a8bbc3fcbcd2",
+      "name": "HTTP Request1",
+      "credentials": {
+        "googleOAuth2Api": {
+          "id": "hEHdtMgewSAe5rfv",
+          "name": "Google account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const base64 = $input.first().json.data;\nconst mailText = $('Code in JavaScript3').first().json.mailText;\n\nconst buffer = Buffer.from(base64, 'base64');\nconst pdfText = buffer.toString('latin1').substring(0, 10000);\n\nreturn [{\n  json: {\n    mailText: mailText + '\\n\\n--- PDF CONTENT ---\\n\\n' + pdfText\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        -208
+      ],
+      "id": "f87f84b8-81f1-43ad-8464-16ac333058c5",
+      "name": "Code in JavaScript1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search in Tavily": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "33364dcd-7698-4aa0-8fa3-cf9f1b96eb41",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "94acb185f38370a0f4421e86bc7f72561507bc59ef9976c60121fcf67a017426"
+  },
+  "id": "lO6V7YBweZzrayOe",
+  "tags": []
+}
